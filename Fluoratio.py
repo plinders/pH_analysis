@@ -47,13 +47,18 @@ def folderratio(folder):
 
 def autoratio():
     """Sample function to process folder with multiple folders to be analysed"""
+    import platform
     # list all directories
     folderlist = glob.glob("*/")
+    osname = platform.system()
     # run folderratio on each directory, write to .txt file with same name as folder
     # the fmt argument in np.savetxt gets rid of scientific notation
     for folder in folderlist:
         output = folderratio(folder)
-        outputfilename = folder.strip("\\") + ".txt"
+        if osname == "Windows":
+            outputfilename = folder.strip("\\") + ".txt"
+        elif osname == "Darwin":
+            outputfilename = folder.strip("/") + ".txt"
         np.savetxt(fname=outputfilename, X=np.array([output]), fmt='%.14f')
 
 autoratio()
