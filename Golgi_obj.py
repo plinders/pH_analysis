@@ -1,6 +1,7 @@
 import tifffile as tiff
 import numpy as np
 import re
+import os
 
 class Golgi():
     def __init__(self, name, data):
@@ -8,37 +9,63 @@ class Golgi():
         self.data = data
         self.ratio = float()
         self.group = classifyGolgi(self.name)
+        #self.data_clean = data
 
     def calcRatio(self, ch1, ch2):
-        self.ratio = np.nanmean(self.data[ch1] / self.data[ch2])
+        ratio_arr = [[],[]]
+        for i in [ch1, ch2]:
+            ratio_arr[i] = self.data[i] - self.data[i].min()
+            ratio_arr[i][self.data[i] == 0] = np.nan
+
+        self.ratio = np.nanmean(ratio_arr[ch1] / ratio_arr[ch2])
 
     def saveImage(self):
         img_name = self.name + ".tif"
-        tiff.imsave(img_name, self.data.astype('uint16'), 'imagej')
+        # Make folder for each group if it doesn't exist
+        if not os.path.exists(self.group):
+            os.makedirs(self.group)
+
+        tiff.imsave(self.group + "/" + img_name, self.data.astype('uint16'), 'imagej')
+
+    def toDataFrame(self):
+        return {
+            'Name': self.name,
+            'Group': self.group,
+            'Ratio': self.ratio
+        }
 
 def classifyGolgi(name):
     """Classify Golgis into pH values/markers etc"""
-    if re.search("^B4GALT1_unt", name):
-        return("B4GALT1_unt")
-    elif re.search("^MGAT2_unt", name):
-        return("MGAT2_unt")
-    elif re.search("pH35", name):
-        return("pH35")
-    elif re.search("pH40", name):
-        return("pH40")
-    elif re.search("pH45", name):
-        return("pH45")
-    elif re.search("pH50", name):
-        return("pH50")
-    elif re.search("pH55", name):
-        return("pH55")
-    elif re.search("pH60", name):
-        return("pH60")
-    elif re.search("pH65", name):
-        return("pH65")
-    elif re.search("pH70", name):
-        return("pH70")
-    elif re.search("pH75", name):
-        return("pH75")
-    else:
-        return(None)
+
+    # pH regex: [pP][hH]\d?.\d
+    # Marker regex: (B4GALT1|MGAT2|MAN2A1)_(unt)/gi
+
+    if re.search("(B4GALT1|MGAT2|MAN2A1)_(unt)", name, flags=re.IGNORECASE):
+        if re.search("(B4GALT1)", name, flags=re.IGNORECASE):
+            return("B4GALT1")
+        elif re.search("(MGAT2)", name, flags=re.IGNORECASE):
+            return("MGAT2")
+        elif re.search("(MAN2A1)", name, flags=re.IGNORECASE):
+            return("MAN2A1")
+    elif re.search("[pP][hH]\d.?\d", name):
+        if re.search("([hH]3.?5)", name):
+            return("pH3.5")
+        elif re.search("([hH]4.?0)", name):
+            return("pH4.0")
+        elif re.search("([hH]4.?5)", name):
+            return("pH4.5")
+        elif re.search("([hH]5.?0)", name):
+            return("pH5.0")
+        elif re.search("([hH]5.?5)", name):
+            return("pH5.5")
+        elif re.search("([hH]6.?0)", name):
+            return("pH6.0")
+        elif re.search("([hH]6.?5)", name):
+            return("pH6.5")
+        elif re.search("([hH]7.?0)", name):
+            return("pH7.0")
+        elif re.search("([hH]7.?5)", name):
+            return("pH7.5")
+        else:
+            return(None)
+

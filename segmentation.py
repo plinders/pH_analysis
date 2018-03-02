@@ -13,7 +13,7 @@ from os.path import basename
 from Golgi_obj import Golgi
 
 
-img_file = "test_img/MGAT2_test1.tif"
+#img_file = "test_img/MGAT2_test1.tif"
 
 def loadImage(img_file):
     """Loads open tiff connection to n-dimensional numpy arrays
@@ -25,7 +25,7 @@ def loadImage(img_file):
 
 def makeContours(img_arr):
     img = img_arr[0]
-    img_gauss = gaussian(img, sigma = 15)
+    img_gauss = gaussian(img, sigma = 10)
     thresh = threshold_otsu(img_gauss)
     binary = img_gauss > thresh
     contours = measure.find_contours(binary, 0.3)
@@ -46,14 +46,15 @@ def extractGolgi(orig_img, contour, thresh):
     arr = np.zeros((slices, height, width))
     for i in range(slices):
         arr[i] = orig_img[i][ymin:ymax, xmin:xmax]
-        clear = arr[i] < thresh
-        arr[i][clear] = np.nan
+        # clear = arr[i] < thresh
+        # arr[i][clear] = np.nan
     return(arr)
 
 def evaluateGolgi(data, contours, thresh, name):
     golgi_arr = []
     for i in range(len(contours)):
-        golgi = extractGolgi(data, contours[i], (thresh - (thresh * 0.25)))
+        golgi = extractGolgi(data, contours[i], (thresh * 0.75))
+        print(golgi)
         fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(ncols = 3, nrows = 2, figsize = (15, 8))
         ax1.imshow(golgi[0], cmap = "Greys_r")
         ax1.axis('off')
@@ -71,10 +72,13 @@ def evaluateGolgi(data, contours, thresh, name):
         ax6.plot(contours[i][:, 1], contours[i][:, 0])
         ax6.axis('off')
         plt.tight_layout()
+        plt.suptitle(name, fontsize=12)
+        plt.subplots_adjust(top=0.95)
         plt.ion()
         plt.show()
         plt.pause(0.0001)
-        save = input("Good Golgi? Y/N ")
+        #save = input("Good Golgi? Y/N ")
+        save = "y"
         saved = False
         while saved is False:
             if re.match("^[yY]", save):
@@ -89,14 +93,14 @@ def evaluateGolgi(data, contours, thresh, name):
         plt.close()
     return(golgi_arr)
 
-df, name = loadImage(img_file)
-contours, thresh = makeContours(df)
-golgis = evaluateGolgi(df, contours, thresh, name)
+# df, name = loadImage(img_file)
+# contours, thresh = makeContours(df)
+# golgis = evaluateGolgi(df, contours, thresh, name)
 
-print(len(golgis))
-for i in golgis:
-    print(i.name)
-    #i.saveImage()
-    i.calcRatio(0, 1)
-    print(i.ratio)
+# print(len(golgis))
+# for i in golgis:
+#     print(i.name)
+#     i.saveImage()
+#     #i.calcRatio(0, 1)
+#     #print(i.ratio)
     
