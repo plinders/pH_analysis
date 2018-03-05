@@ -46,15 +46,13 @@ def extractGolgi(orig_img, contour, thresh):
     arr = np.zeros((slices, height, width))
     for i in range(slices):
         arr[i] = orig_img[i][ymin:ymax, xmin:xmax]
-        # clear = arr[i] < thresh
-        # arr[i][clear] = np.nan
     return(arr)
 
 def evaluateGolgi(data, contours, thresh, name):
     golgi_arr = []
     for i in range(len(contours)):
         golgi = extractGolgi(data, contours[i], (thresh * 0.75))
-        print(golgi)
+        # print(golgi)
         fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(ncols = 3, nrows = 2, figsize = (15, 8))
         ax1.imshow(golgi[0], cmap = "Greys_r")
         ax1.axis('off')
@@ -77,8 +75,8 @@ def evaluateGolgi(data, contours, thresh, name):
         plt.ion()
         plt.show()
         plt.pause(0.0001)
-        #save = input("Good Golgi? Y/N ")
-        save = "y"
+        save = input("Good Golgi? Y/N ")
+        #save = "y"
         saved = False
         while saved is False:
             if re.match("^[yY]", save):
@@ -93,14 +91,3 @@ def evaluateGolgi(data, contours, thresh, name):
         plt.close()
     return(golgi_arr)
 
-# df, name = loadImage(img_file)
-# contours, thresh = makeContours(df)
-# golgis = evaluateGolgi(df, contours, thresh, name)
-
-# print(len(golgis))
-# for i in golgis:
-#     print(i.name)
-#     i.saveImage()
-#     #i.calcRatio(0, 1)
-#     #print(i.ratio)
-    

@@ -27,13 +27,6 @@ class Golgi():
 
         tiff.imsave(self.group + "/" + img_name, self.data.astype('uint16'), 'imagej')
 
-    def toDataFrame(self):
-        return {
-            'Name': self.name,
-            'Group': self.group,
-            'Ratio': self.ratio
-        }
-
 def classifyGolgi(name):
     """Classify Golgis into pH values/markers etc"""
 
