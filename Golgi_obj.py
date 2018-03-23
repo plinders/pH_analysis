@@ -17,7 +17,7 @@ class Golgi():
             ratio_arr[i] = self.data[i] - self.data[i].min()
             ratio_arr[i][self.data[i] == 0] = np.nan
 
-        self.ratio = np.nanmean(ratio_arr[ch1] / ratio_arr[ch2])
+        self.ratio = np.nanmean(ratio_arr[ch1]) / np.nanmean(ratio_arr[ch2])
 
     def saveImage(self):
         img_name = self.name + ".tif"
@@ -40,6 +40,13 @@ def classifyGolgi(name):
             return("MGAT2")
         elif re.search("(MAN2A1)", name, flags=re.IGNORECASE):
             return("MAN2A1")
+    elif re.search("(B4GALT1|MGAT2|MAN2A1)_(TMEM)", name, flags=re.IGNORECASE):
+        if re.search("(B4GALT1)", name, flags=re.IGNORECASE):
+            return("B4GALT1_TMEM")
+        elif re.search("(MGAT2)", name, flags=re.IGNORECASE):
+            return("MGAT2_TMEM")
+        elif re.search("(MAN2A1)", name, flags=re.IGNORECASE):
+            return("MAN2A1_TMEM")
     elif re.search("[pP][hH]\d.?\d", name):
         if re.search("([hH]3.?5)", name):
             return("pH3.5")

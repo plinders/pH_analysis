@@ -57,7 +57,7 @@ def arrayToDF(arr):
         for item in arr:
             if group == item.group:
                 temp.append(item.ratio)
-                temp = removeOutliers(temp)
+                #temp = removeOutliers(temp)
                 d[group] = temp
     df = pd.DataFrame.from_dict(d, orient='index')
     df = df.T
@@ -76,7 +76,7 @@ def arrayToDF(arr):
     rest_df = df[rest_cols]
 
     pH_m = pH_m.dropna()
-    pH_m = ph_m.sort_values(by=['pH']).reset_index(drop=True)
+    pH_m = pH_m.sort_values(by=['pH']).reset_index(drop=True)
 
     return(pH_m, rest_df)
 
@@ -95,6 +95,7 @@ def polyGraph(inFile, pH_df, deg):
     plt.ylabel("Ratio 405/470")
     plt.title(f"{inFile}")  
     plt.savefig(f"{inFile}.pdf", dpi=300, papertype="a4")
+    plt.close()
     return(p)
 
 def solveForY(val, p):
