@@ -2,7 +2,6 @@ from segmentation import loadImage, makeContours, evaluateGolgi
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from numpy.polynomial import Polynomial as P
 import glob
 from Golgi_obj import Golgi
 
@@ -85,27 +84,31 @@ def polyGraph(inFile, pH_df, deg):
     y = pH_df['Ratio'].values
     print(x)
 
-    p = P.fit(x, y, deg)
+    popt = np.polyfit(x, y, 3)
 
     x_new = np.linspace(x[0], x[-1], 50)
-    y_new = p(x_new)
+    y_new = np.polyval(popt, x_new)
 
-    plt.plot(x, y, 'o', x_new, y_new)
+    plt.plot(x, y, 'o', label='data')
+    plt.plot(x_new, y_new, 'r-', label="fit")
     plt.xlabel("pH")
     plt.ylabel("Ratio 405/470")
     plt.title(f"{inFile}")  
+    plt.legend()
     plt.savefig(f"{inFile}.pdf", dpi=300, papertype="a4")
     plt.close()
     return(p)
 
-def solveForY(val, p):
-    return((p - val).roots()[2])
+def solveForY(p, val):
+    pc = popt.copy()
+    pc[-1] -= y
+    return(np.roots(pc))
 
 def calcRest(rest_df, p):
     for col in rest_df.columns:
         out_list = []
         for i in rest_df[col].dropna().values:
-            out_list.append(np.absolute(solveForY(i, p)))
+            out_list.append(np.absolute(solveForY(p, i)))
         filename = str(col) + ".txt"
         f = open(filename, 'w')
         for item in out_list:
