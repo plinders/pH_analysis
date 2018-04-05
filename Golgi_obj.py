@@ -33,20 +33,20 @@ def classifyGolgi(name):
     # pH regex: [pP][hH]\d?.\d
     # Marker regex: (B4GALT1|MGAT2|MAN2A1)_(unt)/gi
 
-    if re.search("(B4GALT1|MGAT2|MAN2A1)_(unt)", name, flags=re.IGNORECASE):
+    if re.search("(B4GALT1|MGAT2|MANII)_(unt)", name, flags=re.IGNORECASE):
         if re.search("(B4GALT1)", name, flags=re.IGNORECASE):
             return("B4GALT1")
         elif re.search("(MGAT2)", name, flags=re.IGNORECASE):
             return("MGAT2")
         elif re.search("(MAN2A1)", name, flags=re.IGNORECASE):
             return("MAN2A1")
-    elif re.search("(B4GALT1|MGAT2|MAN2A1)_(TMEM)", name, flags=re.IGNORECASE):
+    elif re.search("(TMEM199KO)_(B4GALT1|MGAT2|MANII)", name, flags=re.IGNORECASE):
         if re.search("(B4GALT1)", name, flags=re.IGNORECASE):
-            return("B4GALT1_TMEM")
+            return("TMEM199KO_B4GALT1")
         elif re.search("(MGAT2)", name, flags=re.IGNORECASE):
-            return("MGAT2_TMEM")
-        elif re.search("(MAN2A1)", name, flags=re.IGNORECASE):
-            return("MAN2A1_TMEM")
+            return("TMEM199KO_MGAT2")
+        elif re.search("(MANII)", name, flags=re.IGNORECASE):
+            return("TMEM199KO_MANII")
     elif re.search("[pP][hH]\d.?\d", name):
         if re.search("([hH]3.?5)", name):
             return("pH3.5")
