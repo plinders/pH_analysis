@@ -79,7 +79,28 @@ def arrayToDF(arr):
 
     return(pH_m, rest_df)
 
-def polyGraph(inFile, pH_df, deg):
+def loadCSV(file):
+    df = pd.read_csv(file)
+    ph_cols = [col for col in df.columns if 'pH' in col]
+    ph_df = df[ph_cols]
+
+    for i, col in enumerate(ph_cols):
+        temp = col.split('pH')[1]
+        ph_cols[i] = float(temp)
+
+    ph_df.columns = ph_cols
+    pH_m = ph_df.melt(var_name="pH", value_name="Ratio")
+
+    rest_cols = [col for col in df.columns if 'pH' not in col]
+    rest_df = df[rest_cols]
+
+    pH_m = pH_m.dropna()
+    pH_m = pH_m.sort_values(by=['pH']).reset_index(drop=True)
+    pH_m = pH_m[pH_m['Ratio'] < 20]
+
+    return(pH_m, rest_df)
+
+def polyGraph(inFile, pH_df):
     x = pH_df['pH'].values
     y = pH_df['Ratio'].values
     print(x)
@@ -97,12 +118,12 @@ def polyGraph(inFile, pH_df, deg):
     plt.legend()
     plt.savefig(f"{inFile}.pdf", dpi=300, papertype="a4")
     plt.close()
-    return(p)
+    return(popt)
 
 def solveForY(p, val):
-    pc = popt.copy()
-    pc[-1] -= y
-    return(np.roots(pc))
+    pc = p.copy()
+    pc[-1] -= val
+    return(np.roots(pc)[0])
 
 def calcRest(rest_df, p):
     for col in rest_df.columns:
