@@ -48,7 +48,7 @@ def classifyGolgi(name):
             return("TMEM199KO_MGAT2")
         elif re.search("(MANII)", name, flags=re.IGNORECASE):
             return("TMEM199KO_MANII")
-     elif re.search("(Parental)", name, flags=re.IGNORECASE):
+    elif re.search("(Parental)", name, flags=re.IGNORECASE):
         if re.search("(B4GALT1)", name, flags=re.IGNORECASE):
             return("Parental_B4GALT1")
         elif re.search("(MGAT2)", name, flags=re.IGNORECASE):
