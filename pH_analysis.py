@@ -123,7 +123,7 @@ def polyGraph(inFile, pH_df):
 def solveForY(p, val):
     pc = p.copy()
     pc[-1] -= val
-    return(np.roots(pc)[0])
+    return(np.roots(pc)[1])
 
 def calcRest(rest_df, p):
     for col in rest_df.columns:
