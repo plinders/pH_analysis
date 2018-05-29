@@ -82,6 +82,7 @@ def evaluateGolgi(data, contours, thresh, name):
             if re.match("^[yY]", save):
                 golgi_name = name + "_cell_" + str((len(golgi_arr) + 1))
                 golgi_arr.append(Golgi(golgi_name, golgi))
+                golgi_arr[len(golgi_arr)].saveImage()
                 saved = True
             elif re.match("^[nN]", save):
                 pass
