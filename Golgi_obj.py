@@ -9,6 +9,7 @@ class Golgi():
         self.data = data
         self.ratio = float()
         self.group = classifyGolgi(self.name)
+        saveImage(self)
         #self.data_clean = data
 
     def calcRatio(self, ch1, ch2):
@@ -19,13 +20,13 @@ class Golgi():
 
         self.ratio = np.nanmean(ratio_arr[ch1]) / np.nanmean(ratio_arr[ch2])
 
-    def saveImage(self):
-        img_name = self.name + ".tif"
-        # Make folder for each group if it doesn't exist
-        if not os.path.exists(self.group):
-            os.makedirs(self.group)
+def saveImage(img):
+    img_name = img.name + ".tif"
+    # Make folder for each group if it doesn't exist
+    if not os.path.exists(img.group):
+        os.makedirs(img.group)
 
-        tiff.imsave(self.group + "/" + img_name, self.data.astype('uint16'), 'imagej')
+    tiff.imsave(img.group + "/" + img_name, img.data.astype('uint16'), 'imagej')
 
 def classifyGolgi(name):
     """Classify Golgis into pH values/markers etc"""

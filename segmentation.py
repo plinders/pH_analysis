@@ -78,19 +78,22 @@ def evaluateGolgi(data, contours, thresh, name):
         save = input("Good Golgi? Y/N ")
         #save = "y"
         saved = False
-        while saved is False:
-            if re.match("^[yY]", save):
-                golgi_name = name + "_cell_" + str((len(golgi_arr) + 1))
-                sel_golgi = Golgi(golgi_name, golgi)
-                golgi_arr.append(sel_golgi)
-                sel_golgi.saveImage()
-                # golgi_arr[len(golgi_arr)].saveImage()
-                saved = True
-            elif re.match("^[nN]", save):
-                pass
-                saved = True
-            else:
-                save = input("Invalid input. Good Golgi? Y/N ")       
+        try: 
+            while saved is False:
+                if re.match("^[yY]", save):
+                    golgi_name = name + "_cell_" + str((len(golgi_arr) + 1))
+                    sel_golgi = Golgi(golgi_name, golgi)
+                    golgi_arr.append(sel_golgi)
+                    # sel_golgi.saveImage()
+                    # golgi_arr[len(golgi_arr)].saveImage()
+                    saved = True
+                elif re.match("^[nN]", save):
+                    pass
+                    saved = True
+                else:
+                    save = input("Invalid input. Good Golgi? Y/N ")
+        except:
+            pass       
         plt.close()
     return(golgi_arr)
 
